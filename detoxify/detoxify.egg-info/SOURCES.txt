@@ -1,0 +1,15 @@
+LICENSE
+README.md
+pyproject.toml
+setup.cfg
+setup.py
+detoxify/__init__.py
+detoxify/detoxify.py
+detoxify.egg-info/PKG-INFO
+detoxify.egg-info/SOURCES.txt
+detoxify.egg-info/dependency_links.txt
+detoxify.egg-info/requires.txt
+detoxify.egg-info/top_level.txt
+tests/test_models.py
+tests/test_torch_hub.py
+tests/test_trainer.py
