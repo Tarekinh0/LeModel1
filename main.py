@@ -56,19 +56,21 @@ def detox(seq):
 
 def vocal_answer(answer):
     sentences = nltk.sent_tokenize(answer)
-    SILENCE = numpy.zeros(int(0.25*SAMPLE_RATE))  # quarter second of silence
-    SILENCE = SILENCE.reshape(-1,1)
-    pieces = [] 
+    VOICE = "v2/en_speaker_6"
+    SILENCE = numpy.zeros((int(SAMPLE_RATE*0.25), 1), numpy.float32) #numpy array of silence for 0.25s
+    pieces = [SILENCE]
     synthesiser = pipeline("text-to-speech", "suno/bark-small")
-    # Breaking the response into pieces to generate independantly
+    # Breaking the response into pieces to generate above 13 seconds
     for sentence in sentences:
+        # will uncomment once the transformers library will be updated to contain this new voice_preset
+        # Until then, we can't use the same voice for the answer
+        # speech = synthesiser(sentence, forward_params={"voice_preset": VOICE, "do_sample": True, "pad_token_id": 0})
         speech = synthesiser(sentence, forward_params={"do_sample": True, "pad_token_id": 0})
-        pieces += [speech['audio'].T, SILENCE.copy()]
+        pieces += [speech['audio'].T, SILENCE]
         torch.cuda.empty_cache()
-    final_speech = numpy.row_stack(pieces)
+    final_speech = numpy.concatenate(pieces)
     write_wav("response.wav", rate=speech["sampling_rate"], data=final_speech)
     Audio("response.wav")
-
 
 def generate_format_output(prompt_template):
     pipe = pipeline(
@@ -113,21 +115,6 @@ def loop():
 
 print("\n\nWrite \'exit\' as a prompt to exit the program !\n\n")
 
-vocal_answer("Testing if the voice AI works well. By the way, how ARE you ?")
-# loop()
+loop()
 
 
-
-def vocal_answer(answer):
-    sentences = nltk.sent_tokenize(answer)
-    SILENCE = numpy.zeros(int(0.25 * SAMPLE_RATE))  # quarter second of silence
-    SPEAKER = "v2/en_speaker_6"
-    pieces = []
-    for sentence in sentences:
-        synthesiser = pipeline("text-to-speech", "suno/bark-small")
-        speech = synthesiser(sentence, forward_params={"do_sample": True, "pad_token_id": 0})
-        pieces += [speech, SILENCE.copy()]
-        torch.cuda.empty_cache()
-    final_speech = numpy.concatenate(pieces)
-    write_wav("response.wav", rate=speech["sampling_rate"], data=final_speech.T)
-    # read_wav("response.wav")
