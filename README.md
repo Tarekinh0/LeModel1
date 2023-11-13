@@ -1,5 +1,9 @@
 **LeModel1**
 
+If you have any questions, please contact me @ : tarek.mahfoudh@tartech.net
+Or simply raise an issue on GitHub to request a change or signal a bug.
+Have fun :)
+
 We will need to reconfigure the libraries before making the main.py work.
 Here are the dependencies that you will need to make sure everything works locally without any API calls to HuggingFace.
 
